@@ -163,4 +163,16 @@
     });
   </script>
 </body>
+<script>
+  document.getElementById('open-ios').addEventListener('click', function () {
+    const userAgent = window.navigator.userAgent || window.navigator.vendor || window.opera;
+
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      // iOS detected, buka di Safari
+      window.location.href = "https://laksa19.github.io/myqr";
+    } else {
+      alert("This button is intended for iOS Safari.");
+    }
+  });
+</script>
 </html>
