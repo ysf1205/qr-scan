@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#000000" />
+  <title>hotspot QR CODE SCANNER</title>
+  <style>
+    body{
+      background-color: #000000;
+      color :#ffffff;
+      font-family: Arial, sans-serif;
+    }
+    #reader {
+      width: 95vw;
+      max-width: 600px;
+      margin: auto;
+    }
+    .btn{
+      margin-top:5px;
+      margin-bottom:10px;
+      padding:5px;
+      background-color: #f2f2f2;
+      color: #000000;
+      border-radius:3px;
+      width: 150px;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+      user-select: none;
+    }
+    a.btn {
+      text-decoration: none;
+      color: #000000;
+    }
+    .buttons-wrapper {
+      width: 95vw;
+      max-width: 600px;
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-between;
+    }
+    a {
+      color:#20a8d8;
+    }
+    @font-face {
+      font-family: 'fontello';
+      src: url('./font/fontello.eot?14907215');
+      src: url('./font/fontello.eot?14907215#iefix') format('embedded-opentype'),
+           url('./font/fontello.woff?14907215') format('woff'),
+           url('./font/fontello.ttf?14907215') format('truetype'),
+           url('./font/fontello.svg?14907215#fontello') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }
+    .icon
+    {
+      font-family: "fontello";
+      font-style: normal;
+      font-weight: normal;
+      speak: none;
+      display: inline-block;
+      text-decoration: inherit;
+      width: 1em;
+      margin-right: .2em;
+      text-align: center;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1em;
+      margin-left: .2em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+      word-wrap: break-word;
+      text-align: center;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+
+  <!-- Import html5-qrcode library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <!-- Arc.io widget -->
+  <script async src="https://arc.io/widget.min.js#rDZc6s4f"></script>  
+</head>
+<body>
+  <center>
+    <h1>hotspot QR CODE SCANNER</h1>
+
+    <div id="reader"></div>
+
+    <div id="result">Scan result will appear here</div>
+
+    <div class="buttons-wrapper">
+      <div class="btn" id="reload"><i class="icon icon-arrows-cw">&#xe800;</i> Reload Camera</div>
+      <a class="btn" href="intent://laksa19.github.io/myqr#Intent;scheme=http;package=com.android.chrome;end">
+        <i class="icon icon-chrome-1">&#xf268;</i> Open in Chrome
+      </a>
+    </div>
+
+    <div style="margin-top: 30px; color: #aaa;">
+      Powered by <a href="https://github.com/mebjas/html5-qrcode" target="_blank" rel="noopener noreferrer">html5-qrcode</a>
+    </div>
+  </center>
+
+  <script>
+    const resultElement = document.getElementById('result');
+    const reloadBtn = document.getElementById('reload');
+
+    // Create scanner instance
+    let html5QrcodeScanner = new Html5Qrcode("reader");
+
+    // Function to start scanning
+    function startScanner() {
+      html5QrcodeScanner.start(
+        { facingMode: "environment" }, // Use back camera if available
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 }
+        },
+        qrCodeMessage => {
+          // On successful scan
+          resultElement.innerText = `QR Code: ${qrCodeMessage}`;
+
+          // Optional: stop scanning after first successful scan
+          html5QrcodeScanner.stop().catch(err => console.error("Failed to stop scanner:", err));
+        },
+        errorMessage => {
+          // You can log scan errors here if needed
+          // console.log(`Scan error: ${errorMessage}`);
+        }
+      ).catch(err => {
+        resultElement.innerText = `Error starting camera: ${err}`;
+      });
+    }
+
+    // Start the scanner on page load
+    startScanner();
+
+    // Reload button: stop and restart scanner
+    reloadBtn.addEventListener('click', () => {
+      html5QrcodeScanner.stop().then(() => {
+        resultElement.innerText = 'Scanner restarted. Scan result will appear here';
+        startScanner();
+      }).catch(err => {
+        resultElement.innerText = `Failed to reload scanner: ${err}`;
+      });
+    });
+  </script>
+</body>
+</html>
